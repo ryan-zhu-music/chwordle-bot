@@ -121,7 +121,7 @@ async def on_message(message):
             await message.channel.send(f'Starting a new WORDLE game with {message.author.mention}!\nType `$w guess` followed by your guess to start guessing.')
             client.w_players[author] = {
                 "name": author,
-                "secret": client.wordlist[randint(0, len(client.wordlist))],
+                "secret": "dowse",#client.wordlist[randint(0, len(client.wordlist))],
                 "guesses": [],
                 "available": {
                     "correct": "",
@@ -148,9 +148,10 @@ async def on_message(message):
                 await message.channel.send("Your guess was not found in the wordlist.")
             else:
                 result = []
+                temp_correct = ""
+                temp_in = ""
                 for c, i in enumerate(guess):
-                    temp_correct = ""
-                    temp_in = ""
+                    
                     if i == client.w_players[author]["secret"][c]:    #correct
                         result.append(f"**__{i.upper()}__**")
                         client.w_players[author]["available"]["correct"] += i.upper() 
