@@ -121,7 +121,7 @@ async def on_message(message):
             await message.channel.send(f'Starting a new WORDLE game with {message.author.mention}!\nType `$w guess` followed by your guess to start guessing.')
             client.w_players[author] = {
                 "name": author,
-                "secret": "dowse",#client.wordlist[randint(0, len(client.wordlist))],
+                "secret": client.wordlist[randint(0, len(client.wordlist))],
                 "guesses": [],
                 "available": {
                     "correct": "",
