@@ -208,7 +208,7 @@ async def on_message(message):
                     await client.reset(author, "WORDLE")
                 elif len(client.w_players[author]["guesses"]) == 6:
                     await message.channel.send(f"You ran out of guesses, {message.author.mention}. The word was `{client.w_players[author]['secret']}`. Better luck next time!")
-                    await client.update_statistics(author, "w", "f")
+                    await client.update_statistics(author, "w", "fail")
                     await client.reset(author, "WORDLE")
 
     if message.content == "$w available":       
@@ -242,7 +242,7 @@ async def on_message(message):
             await message.channel.send("You do not have a game in progress. Type `$w play` to start one!")
         else:
             await message.channel.send(f'Ending game. The word was `{client.w_players[author]["secret"]}`')
-            await client.update_statistics(author, "w", "f")
+            await client.update_statistics(author, "w", "fail")
             await client.reset(author, "WORDLE")
 
     if message.content == "$w statistics":
@@ -357,7 +357,7 @@ async def on_message(message):
                                 secret = secret[0] + CHORD_NAMES[c] + f" - {' '.join(secret)}"
                                 break
                     await message.channel.send(f"You ran out of guesses, {message.author.mention}. The chord was `{secret}`. Better luck next time!")
-                    await client.update_statistics(author, "c", "f")
+                    await client.update_statistics(author, "c", "fail")
                     await client.reset(author, "CHORDLE")
 
     if message.content == "$c show":      
@@ -381,7 +381,7 @@ async def on_message(message):
                         secret = secret[0] + CHORD_NAMES[c] + f" - {' '.join(secret)}"
                         break
             await message.channel.send(f'Ending game. The chord was `{secret}`')
-            await client.update_statistics(author, "c", "f")
+            await client.update_statistics(author, "c", "fail")
             await client.reset(author, "CHORDLE")
     
     if message.content == "$c statistics":
