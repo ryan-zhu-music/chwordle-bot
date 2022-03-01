@@ -76,12 +76,12 @@ def pad(guesses, length, max):
     return "\n".join(temp_guesses)
 
 def format_statistics(stats, game):
-    results = f"1 guess:    {stats['1']}\n2 guesses:  {stats['2']}\n3 guesses:  {stats['3']}\n4 guesses:  {stats['4']}\n"
+    results = f"1 guess:\t\t{stats['1']}\n2 guesses:\t\t{stats['2']}\n3 guesses:\t\t{stats['3']}\n4 guesses:\t\t{stats['4']}\n"
 
     if game == "w":
-        results += f"5 guesses:  {stats['5']}\n6 guesses:  {stats['6']}\n"
+        results += f"5 guesses:\t\t{stats['5']}\n6 guesses:\t\t{stats['6']}\n"
 
-    results += f"Failed:     {stats['fail']}"
+    results += f"Failed:\t\t{stats['fail']}"
 
     return results
 
@@ -115,7 +115,8 @@ async def reset(author, game):
 @client.event
 async def on_message(message):
     message.content = message.content.lower().strip()
-
+    author = str(message.author).replace(" ", "")
+    
     if message.author == client.user:
         return
 
@@ -126,7 +127,6 @@ async def on_message(message):
         await message.channel.send(W_INSTRUCTIONS)
 
     if message.content == '$w play': #initialize new game
-        author = str(message.author).replace(" ", "")
         try:
             p = client.w_players[author]["name"]
         except:
@@ -146,8 +146,7 @@ async def on_message(message):
         else:
             await message.channel.send(f'You already have an ongoing game, {message.author.mention}.')
 
-    if message.content.startswith("$w guess"):
-        author = str(message.author).replace(" ", "")
+    if message.content.startswith("$w guess"):       
         try:
             p = client.w_players[author]["name"]
         except:
@@ -211,8 +210,7 @@ async def on_message(message):
                     await client.update_statistics(author, "w", "f")
                     await client.reset(author, "WORDLE")
 
-    if message.content == "$w available":
-        author = str(message.author).replace(" ", "")
+    if message.content == "$w available":       
         try:
             p = client.w_players[author]["name"]
         except:
@@ -228,8 +226,7 @@ async def on_message(message):
             
             await message.channel.send(output)
 
-    if message.content == "$w show":
-        author = str(message.author).replace(" ", "")
+    if message.content == "$w show":        
         try:
             p = client.w_players[author]["name"]
         except:
@@ -237,8 +234,7 @@ async def on_message(message):
         else:
             await message.channel.send(f'Guesses for {message.author.mention}:\n' + pad(client.w_players[author]["guesses"], 5, 6))
 
-    if message.content == "$w quit":
-        author = str(message.author).replace(" ", "")
+    if message.content == "$w quit":       
         try:
             p = client.w_players[author]["name"]
         except:
@@ -252,20 +248,18 @@ async def on_message(message):
         try: 
             f = open("statistics.json", "r")
         except:
-            print("not found")
             f = open("statistics.json", "w")
             f.close()
             f = open("statistics.json", "r")
 
         try:
             statistics = json.load(f)
-            print("loaded:", statistics)
             f.close()
         except:
             statistics = {}
 
         id_stats = {}
-        if id not in statistics:
+        if author not in statistics:
             id_stats = {
                 "1": 0,
                 "2": 0,
@@ -279,7 +273,7 @@ async def on_message(message):
         else:
             id_stats = format_statistics(statistics[id]["w"], "w")
         
-        await message.channel.send(f"Statistics for {message.author.mention}:\n{id_stats}")
+        await message.channel.send(f"**Statistics for** {message.author.mention}**:**\n{id_stats}")
 
     #CHORDLE
     if message.content == '$c':
@@ -288,8 +282,7 @@ async def on_message(message):
     if message.content == "$c help":
         await message.channel.send(C_INSTRUCTIONS)
 
-    if message.content == '$c play': #initialize new game
-        author = str(message.author).replace(" ", "")
+    if message.content == '$c play': #initialize new game      
         try:
             p = client.c_players[author]["name"]
         except:
@@ -304,8 +297,7 @@ async def on_message(message):
         else:
             await message.channel.send(f'You already have an ongoing game, {message.author.mention}.')
 
-    if message.content.startswith("$c guess"):
-        author = str(message.author).replace(" ", "")
+    if message.content.startswith("$c guess"):       
         try:
             p = client.c_players[author]["name"]
         except:
@@ -367,8 +359,7 @@ async def on_message(message):
                     await client.update_statistics(author, "c", "f")
                     await client.reset(author, "CHORDLE")
 
-    if message.content == "$c show":
-        author = str(message.author).replace(" ", "")
+    if message.content == "$c show":      
         try:
             p = client.c_players[author]["name"]
         except:
@@ -376,8 +367,7 @@ async def on_message(message):
         else:
             await message.channel.send(f'Guesses for {message.author.mention}:\n' + pad(client.c_players[author]["guesses"], 4, 4))
 
-    if message.content == "$c quit":
-        author = str(message.author).replace(" ", "")
+    if message.content == "$c quit":      
         try:
             p = client.c_players[author]["name"]
         except:
@@ -408,7 +398,7 @@ async def on_message(message):
             statistics = {}
 
         id_stats = {}
-        if id not in statistics:
+        if author not in statistics:
             id_stats = {
                 "1": 0,
                 "2": 0,
@@ -420,7 +410,7 @@ async def on_message(message):
         else:
             id_stats = format_statistics(statistics[id]["c"], "c")
         
-        await message.channel.send(f"Statistics for {message.author.mention}:\n{id_stats}")
+        await message.channel.send(f"**Statistics for** {message.author.mention}**:**\n{id_stats}")
 
 @client.event
 async def update_statistics(id, game, guesses):
