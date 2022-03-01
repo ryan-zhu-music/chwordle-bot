@@ -75,7 +75,7 @@ def pad(guesses, length, max):
         temp_guesses.append(('` ` ' * length).strip())
     return "\n".join(temp_guesses)
 
-def format_statistics(author, stats, game):
+def format_statistics(stats, game):
     results = f"""
 1 guess:    {stats['1']}
 2 guesses:  {stats['2']}
