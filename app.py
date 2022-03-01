@@ -76,17 +76,10 @@ def pad(guesses, length, max):
     return "\n".join(temp_guesses)
 
 def format_statistics(stats, game):
-    results = f"""
-1 guess:    {stats['1']}
-2 guesses:  {stats['2']}
-3 guesses:  {stats['3']}
-4 guesses:  {stats['4']}
-    """
+    results = f"1 guess:    {stats['1']}\n2 guesses:  {stats['2']}\n3 guesses:  {stats['3']}\n4 guesses:  {stats['4']}\n"
 
     if game == "w":
-        results += f"""
-        5 guesses:  {stats['5']}
-        6 guesses:  {stats['6']}"""
+        results += f"5 guesses:  {stats['5']}\n6 guesses:  {stats['6']}\n"
 
     results += f"Failed:     {stats['fail']}"
 
@@ -398,7 +391,7 @@ async def on_message(message):
             await client.update_statistics(author, "c", "f")
             await client.reset(author, "CHORDLE")
     
-    if message.content == "$w statistics":
+    if message.content == "$c statistics":
         try: 
             f = open("statistics.json", "r")
         except:
@@ -465,6 +458,7 @@ async def update_statistics(id, game, guesses):
     stats[id][game][guesses] += 1
 
     with open("statistics.json", "w") as out:
+        print(stats)
         out.write(json.dumps(stats, indent=4))
         out.close()
         
