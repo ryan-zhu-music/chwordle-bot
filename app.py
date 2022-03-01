@@ -252,12 +252,14 @@ async def on_message(message):
         try: 
             f = open("statistics.json", "r")
         except:
+            print("not found")
             f = open("statistics.json", "w")
             f.close()
             f = open("statistics.json", "r")
 
         try:
             statistics = json.load(f)
+            print("loaded:", statistics)
             f.close()
         except:
             statistics = {}
@@ -458,7 +460,6 @@ async def update_statistics(id, game, guesses):
     stats[id][game][guesses] += 1
 
     with open("statistics.json", "w") as out:
-        print(stats)
         out.write(json.dumps(stats, indent=4))
         out.close()
         
