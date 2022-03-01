@@ -428,7 +428,7 @@ async def on_message(message):
         await message.channel.send(f"Statistics for {message.author.mention}:\n{id_stats}")
 
 @client.event
-def update_statistics(id, game, guesses):
+async def update_statistics(id, game, guesses):
     try: 
         f = open("statistics.json", "r")
     except:
