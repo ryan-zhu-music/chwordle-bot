@@ -88,7 +88,7 @@ def format_statistics(stats, game):
         5 guesses:  {stats['5']}
         6 guesses:  {stats['6']}"""
 
-    results += f"Failed:     {stats['f']}"
+    results += f"Failed:     {stats['fail']}"
 
     return results
 
@@ -278,7 +278,7 @@ async def on_message(message):
                 "4": 0,
                 "5": 0,
                 "6": 0,
-                "failed": 0,
+                "fail": 0,
             }
             id_stats = format_statistics(id_stats, "w")
         else:
@@ -419,7 +419,7 @@ async def on_message(message):
                 "2": 0,
                 "3": 0,
                 "4": 0,
-                "failed": 0,
+                "fail": 0,
             }
             id_stats = format_statistics(id_stats, "c")
         else:
@@ -451,14 +451,14 @@ async def update_statistics(id, game, guesses):
                 "4": 0,
                 "5": 0,
                 "6": 0,
-                "f": 0,
+                "f": 0
             },
             "c": {
                 "1": 0,
                 "2": 0,
                 "3": 0,
                 "4": 0,
-                "f": 0,
+                "f": 0
             }
         }
 
