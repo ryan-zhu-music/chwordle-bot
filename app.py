@@ -2,6 +2,7 @@ import discord
 from random import randint
 from string import ascii_uppercase
 import os
+import json
 
 W_INSTRUCTIONS = """
 HOW TO PLAY WORDLE
@@ -74,6 +75,23 @@ def pad(guesses, length, max):
         temp_guesses.append(('` ` ' * length).strip())
     return "\n".join(temp_guesses)
 
+def format_statistics(author, stats, game):
+    results = f"""
+1 guess:    {stats['1']}
+2 guesses:  {stats['2']}
+3 guesses:  {stats['3']}
+4 guesses:  {stats['4']}
+    """
+
+    if game == "w":
+        results += f"""
+        5 guesses:  {stats['5']}
+        6 guesses:  {stats['6']}"""
+
+    results += f"Failed:     {stats['f']}"
+
+    return results
+
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='$w help'))
@@ -103,6 +121,8 @@ async def reset(author, game):
 
 @client.event
 async def on_message(message):
+    message.content = message.content.lower().strip()
+
     if message.author == client.user:
         return
 
@@ -191,9 +211,11 @@ async def on_message(message):
                 await message.channel.send(pad(client.w_players[author]["guesses"], 5, 6))
                 if guess == client.w_players[author]["secret"]: 
                     await message.channel.send(f"Congratulations, {message.author.mention}, you guessed the word in {len(client.w_players[author]['guesses'])} tries!")
+                    await client.update_statistics(author, "w", str(len(client.w_players[author]['guesses'])))
                     await client.reset(author, "WORDLE")
                 elif len(client.w_players[author]["guesses"]) == 6:
                     await message.channel.send(f"You ran out of guesses, {message.author.mention}. The word was `{client.w_players[author]['secret']}`. Better luck next time!")
+                    await client.update_statistics(author, "w", "f")
                     await client.reset(author, "WORDLE")
 
     if message.content == "$w available":
@@ -230,8 +252,39 @@ async def on_message(message):
             await message.channel.send("You do not have a game in progress. Type `$w play` to start one!")
         else:
             await message.channel.send(f'Ending game. The word was `{client.w_players[author]["secret"]}`')
+            await client.update_statistics(author, "w", "f")
             await client.reset(author, "WORDLE")
 
+    if message.content == "$w statistics":
+        try: 
+            f = open("statistics.json", "r")
+        except:
+            f = open("statistics.json", "w")
+            f.close()
+            f = open("statistics.json", "r")
+
+        try:
+            statistics = json.load(f)
+            f.close()
+        except:
+            statistics = {}
+
+        id_stats = {}
+        if id not in statistics:
+            id_stats = {
+                "1": 0,
+                "2": 0,
+                "3": 0,
+                "4": 0,
+                "5": 0,
+                "6": 0,
+                "failed": 0,
+            }
+            id_stats = format_statistics(id_stats, "w")
+        else:
+            id_stats = format_statistics(statistics[id]["w"], "w")
+        
+        await message.channel.send(f"Statistics for {message.author.mention}:\n{id_stats}")
 
     #CHORDLE
     if message.content == '$c':
@@ -306,6 +359,7 @@ async def on_message(message):
                 await message.channel.send(pad(client.c_players[author]["guesses"], 4, 4))
                 if guess == client.c_players[author]["secret"]: 
                     await message.channel.send(f"Congratulations, {message.author.mention}, you guessed the chord in {len(client.c_players[author]['guesses'])} tries!")
+                    await client.update_statistics(author, "c", str(len(client.c_players[author]['guesses'])))
                     await client.reset(author, "CHORDLE")
                 elif len(client.c_players[author]["guesses"]) == 4:
                     secret = client.c_players[author]['secret']
@@ -315,6 +369,7 @@ async def on_message(message):
                                 secret = secret[0] + CHORD_NAMES[c] + f" - {' '.join(secret)}"
                                 break
                     await message.channel.send(f"You ran out of guesses, {message.author.mention}. The chord was `{secret}`. Better luck next time!")
+                    await client.update_statistics(author, "c", "f")
                     await client.reset(author, "CHORDLE")
 
     if message.content == "$c show":
@@ -340,6 +395,77 @@ async def on_message(message):
                         secret = secret[0] + CHORD_NAMES[c] + f" - {' '.join(secret)}"
                         break
             await message.channel.send(f'Ending game. The chord was `{secret}`')
+            await client.update_statistics(author, "c", "f")
             await client.reset(author, "CHORDLE")
-            
+    
+    if message.content == "$w statistics":
+        try: 
+            f = open("statistics.json", "r")
+        except:
+            f = open("statistics.json", "w")
+            f.close()
+            f = open("statistics.json", "r")
+
+        try:
+            statistics = json.load(f)
+            f.close()
+        except:
+            statistics = {}
+
+        id_stats = {}
+        if id not in statistics:
+            id_stats = {
+                "1": 0,
+                "2": 0,
+                "3": 0,
+                "4": 0,
+                "failed": 0,
+            }
+            id_stats = format_statistics(id_stats, "c")
+        else:
+            id_stats = format_statistics(statistics[id]["c"], "c")
+        
+        await message.channel.send(f"Statistics for {message.author.mention}:\n{id_stats}")
+
+@client.event
+def update_statistics(id, game, guesses):
+    try: 
+        f = open("statistics.json", "r")
+    except:
+        f = open("statistics.json", "w")
+        f.close()
+        f = open("statistics.json", "r")
+
+    try:
+        stats = json.load(f)
+        f.close()
+    except:
+        stats = {}
+
+    if id not in stats:
+        stats[id] = {
+            "w": {
+                "1": 0,
+                "2": 0,
+                "3": 0,
+                "4": 0,
+                "5": 0,
+                "6": 0,
+                "f": 0,
+            },
+            "c": {
+                "1": 0,
+                "2": 0,
+                "3": 0,
+                "4": 0,
+                "f": 0,
+            }
+        }
+
+    stats[id][game][guesses] += 1
+
+    with open("statistics.json", "w") as out:
+        out.write(json.dumps(stats, indent=4))
+        out.close()
+        
 client.run(os.environ["DISCORD_TOKEN"])
