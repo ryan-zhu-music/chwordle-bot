@@ -271,7 +271,7 @@ async def on_message(message):
             }
             id_stats = format_statistics(id_stats, "w")
         else:
-            id_stats = format_statistics(statistics[id]["w"], "w")
+            id_stats = format_statistics(statistics[author]["w"], "w")
         
         await message.channel.send(f"**Statistics for** {message.author.mention}**:**\n{id_stats}")
 
@@ -408,7 +408,7 @@ async def on_message(message):
             }
             id_stats = format_statistics(id_stats, "c")
         else:
-            id_stats = format_statistics(statistics[id]["c"], "c")
+            id_stats = format_statistics(statistics[author]["c"], "c")
         
         await message.channel.send(f"**Statistics for** {message.author.mention}**:**\n{id_stats}")
 
