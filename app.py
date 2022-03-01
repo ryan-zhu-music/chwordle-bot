@@ -76,6 +76,7 @@ def pad(guesses, length, max):
     return "\n".join(temp_guesses)
 
 def format_statistics(stats, game):
+    print("stats:", stats)
     results = f"1 guess:\t\t{stats['1']}\n2 guesses:\t\t{stats['2']}\n3 guesses:\t\t{stats['3']}\n4 guesses:\t\t{stats['4']}\n"
 
     if game == "w":
@@ -436,14 +437,14 @@ async def update_statistics(id, game, guesses):
                 "4": 0,
                 "5": 0,
                 "6": 0,
-                "f": 0
+                "fail": 0
             },
             "c": {
                 "1": 0,
                 "2": 0,
                 "3": 0,
                 "4": 0,
-                "f": 0
+                "fail": 0
             }
         }
 
