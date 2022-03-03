@@ -91,8 +91,9 @@ async def on_ready():
     print('{0.user} successfully initiated.'.format(client))
     
     client.w_players = {}
-    client.wordlist = [i.strip() for i in open("wordlist.txt", "r").readlines()]
-
+    client.wordlist = [i.strip() for i in open("all_words.txt", "r").readlines()]
+    client.secret_wordlist = [i.strip() for i in open("secret_words.txt", "r").readlines()]
+    
     client.c_players = {}
     chordlist = []
     chord_groups = [i.split("\n") for i in open("chordlist.txt", "r").read().split("\n\n")]
@@ -134,7 +135,7 @@ async def on_message(message):
             await message.channel.send(f'Starting a new WORDLE game with {message.author.mention}!\nType `$w guess` followed by your guess to start guessing.')
             client.w_players[author] = {
                 "name": author,
-                "secret": client.wordlist[randint(0, len(client.wordlist))],
+                "secret": client.secret_wordlist[randint(0, len(client.secret_wordlist))],
                 "guesses": [],
                 "available": {
                     "correct": "",
@@ -163,7 +164,6 @@ async def on_message(message):
                 temp_correct = ""
                 temp_in = ""
                 for c, i in enumerate(guess):
-                    
                     if i == client.w_players[author]["secret"][c]:    #correct
                         result.append(f"**__{i.upper()}__**")
                         client.w_players[author]["available"]["correct"] += i.upper() 
