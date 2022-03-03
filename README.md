@@ -26,9 +26,11 @@ Based on [Chordle](https://www.chordle.synthase.cc/)
 | `$w show`     | Show player's guesses |
 | `$w available` | Show correct and not guessed letters |
 | `$w quit` | End WORDLE game |
+| `$w statistics` | Show WORDLE game statistics |
 | ------------- | ------------- |
 | `$c help`     | Show CHORDLE instructions  |
 | `$c play`     | Start a CHORDLE game  |
 | `$c guess [guess]` | Guess a 4-note chord |
 | `$c show`     | Show player's guesses |
 | `$c quit` | End CHORDLE game |
+| `$w statistics` | Show CHORDLE game statistics |
